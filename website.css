@@ -1,0 +1,70 @@
+/* Line is for dividing each section from each other
+for easier read */
+.line_under_section {
+  border: none;
+  height: 2px;
+  background-color: black;
+  margin: 0;
+}
+
+/* box is for containing the contact info in
+"yhteystiedot ja troubleshoot" section */
+.box {
+ width: 400px;
+ margin: 50px auto; /* centers the box */
+ padding: 20px;
+ border: 2px solid #333;
+ border-radius: 10px;
+ background-color: #f2f2f2;
+ text-align: center;
+ box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* "Yhteysteidot ja troubleshoot" and social medias 'container' */
+.container {
+  display: flex;
+  width: 90%;
+  height: 400px;
+  margin: 50px auto;
+  border: 2px solid #333;
+}
+
+/* This is for Left section of above container where
+there will be a sticky note kind of box inside that
+ will hold the contact info. It is consisted 65% 'container' size */
+.left {
+  width: 65%;
+  position: relative;
+  background-color: #fff; /* optional */
+}
+
+/* Box inside left section */
+.inner-box {
+  width: 80%;
+  height: 70%;
+  margin: auto;
+  background-color: #f2f2f2;
+  border: 2px solid #333;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+
+  /* centers the box inside left section */
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+}
+
+/* Right section 35%, there will be the social
+ medias of the company */
+.right {
+  width: 35%;
+  background-color: #ccc;
+}
+
+/* Example content */
+.inner-box h1 {
+  text-align: center;
+  margin-top: 40px;
+}
+.inner-box p {
+  text-align: center;
+}
