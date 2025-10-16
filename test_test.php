@@ -159,18 +159,45 @@
 
   <script>
     const cabins = {
-      helmi1: { title:"Helmi 1", description:"Cozy cabin. Sleeps 4.", priceTiers:{'2':75,'3-5':70,'6+':50}, cleaning:100, linen:25, images:[
-        "https://media.houseandgarden.co.uk/photos/63a1a9b588e2d802928c6499/2:3/w_2000,h_3000,c_limit/MFOX7961.jpg",
-        "https://hips.hearstapps.com/hmg-prod/images/clx100122welldargenzio-002-2-66d768fc6c262.jpg"
-      ]},
-      helmi2: { title:"Helmi 2", description:"Rustic cabin. Sleeps 6.", priceTiers:{'2':120,'3-5':110,'6+':70}, cleaning:100, linen:25, images:[
-        "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615536116.jpg?k=1105a0cd9fd25cd7ebe53a200226d44a240536de1369da10089033a61471f2b9&o=&hp=1",
-        "https://cdn.mos.cms.futurecdn.net/9AW7pCmj5LmquUGiXLRhUW.jpg"
-      ]},
-      helmi3: { title:"Helmi 3", description:"Modern cabin. Sleeps 6.", priceTiers:{'2':110,'3-5':100,'6+':60}, cleaning:100, linen:25, images:[
-        "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/cabin-at-the-lake-thomas-nay.jpg",
-        "https://gallery.streamlinevrs.com/units-gallery/00/05/CD/image_167989129.jpeg"
-      ]}
+      helmi1: {
+        title:"Helmi 1",
+        description:"A cozy cabin by Käränkävaara ridge. Perfect for a peaceful retreat, sleeps 4.",
+        priceTiers:{'2':75,'3-5':70,'6+':50},
+        cleaning:100,
+        linen:25,
+        images:[
+          "https://media.houseandgarden.co.uk/photos/63a1a9b588e2d802928c6499/2:3/w_2000,h_3000,c_limit/MFOX7961.jpg",
+          "https://hips.hearstapps.com/hmg-prod/images/clx100122welldargenzio-002-2-66d768fc6c262.jpg",
+          "https://stofferhome.com/cdn/shop/collections/Screen_Shot_2023-01-17_at_2.25.55_PM_3024x.png?v=1673983797",
+          "https://i.pinimg.com/736x/8b/f2/0d/8bf20dad9de73912e8f79ab827f5da4b.jpg"
+        ]
+      },
+      helmi2: {
+        title:"Helmi 2",
+        description:"Rustic cabin with sauna, ideal for families or groups. Sleeps 6.",
+        priceTiers:{'2':120,'3-5':110,'6+':70},
+        cleaning:100,
+        linen:25,
+        images:[
+          "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615536116.jpg?k=1105a0cd9fd25cd7ebe53a200226d44a240536de1369da10089033a61471f2b9&o=&hp=1",
+          "https://cdn.mos.cms.futurecdn.net/9AW7pCmj5LmquUGiXLRhUW.jpg",
+          "https://blog.canadianloghomes.com/wp-content/uploads/2022/02/log-cabin-living-room.jpg",
+          "https://i.pinimg.com/736x/3a/c6/80/3ac6805b5b0a3fc46b68366a793b418a.jpg"
+        ]
+      },
+      helmi3: {
+        title:"Helmi 3",
+        description:"Modern cabin with fireplace and lake views. Sleeps 6.",
+        priceTiers:{'2':110,'3-5':100,'6+':60},
+        cleaning:100,
+        linen:25,
+        images:[
+          "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/cabin-at-the-lake-thomas-nay.jpg",
+          "https://gallery.streamlinevrs.com/units-gallery/00/05/CD/image_167989129.jpeg",
+          "https://gallery.streamlinevrs.com/units-gallery/00/0C/38/image_165319104.jpeg",
+          "https://stayovernow.com/wp-content/uploads/2024/01/image_163623794-e1704379674682.webp"
+        ]
+      }
     };
 
     const cabinCards = document.querySelectorAll('.cabin-card');
@@ -248,16 +275,23 @@
       const nights=getNights(form.checkin.value,form.checkout.value);
       const people=parseInt(form.people.value)||1;
       if(!cabinKey||isNaN(nights)||nights<2){ totalPriceEl.textContent="0"; return; }
-      let total=pickPrice(cabins[cabinKey].priceTiers,nights)*nights;
-      if(form.cleaning.checked) total+=cabins[cabinKey].cleaning;
-      if(form.linen.checked) total+=cabins[cabinKey].linen*people;
-      totalPriceEl.textContent=total;
+     
+      let total = pickPrice(cabins[cabinKey].priceTiers, nights) * nights;
+      if(form.cleaning.checked) total += cabins[cabinKey].cleaning;
+      if(form.linen.checked) total += cabins[cabinKey].linen * people;
+      totalPriceEl.textContent = total;
     }
-    form.addEventListener('input',calculatePriceClient);
-    form.addEventListener('submit',(e)=>{
-      const nights=getNights(form.checkin.value,form.checkout.value);
-      if(isNaN(nights)||nights<2){ e.preventDefault(); alert("Minimum stay is 2 nights."); return false; }
-      confirmation.innerHTML="<p>Sending reservation to server…</p>";
+
+    form.addEventListener('input', calculatePriceClient);
+
+    form.addEventListener('submit', (e) => {
+      const nights = getNights(form.checkin.value, form.checkout.value);
+      if(isNaN(nights) || nights < 2) {
+        e.preventDefault();
+        alert("Minimum stay is 2 nights.");
+        return false;
+      }
+      confirmation.innerHTML = "<p>Sending reservation to server…</p>";
     });
   </script>
 </body>
