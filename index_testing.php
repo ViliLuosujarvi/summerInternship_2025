@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Siiranmäki Cabins</title>
   <style>
-    /* --- General styles --- */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -14,55 +13,13 @@
       background-size: cover;
       color: #333;
     }
-    header {
-      text-align:center;
-      background:rgba(46,83,57,0.9);
-      color:#fff;
-      padding:2rem 1rem;
-    }
-    main {
-      padding:2rem;
-      max-width:1000px;
-      margin:auto;
-      background:rgba(255,255,255,0.95);
-      border-radius:12px;
-    }
-    .cabins {
-      display:flex;
-      flex-wrap:wrap;
-      gap:1.5rem;
-      margin-bottom:2rem;
-      justify-content:center;
-    }
-    .cabin-card {
-      background:#fff;
-      padding:1rem;
-      border-radius:12px;
-      box-shadow:0 4px 8px rgba(0,0,0,0.15);
-      flex:1 1 30%;
-      text-align:center;
-      cursor:pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      max-width:300px;
-    }
-    .cabin-card:hover {
-      transform:scale(1.03);
-      box-shadow:0 8px 15px rgba(0,0,0,0.25);
-    }
-    .cabin-card img {
-      width:100%;
-      border-radius:8px;
-      margin-bottom:0.5rem;
-      max-height:200px;
-      object-fit:cover;
-    }
-    .reservation {
-      background:#fff;
-      padding:2rem;
-      border-radius:12px;
-      box-shadow:0 4px 6px rgba(0,0,0,0.1);
-      margin-bottom:2rem;
-    }
+    header { text-align:center; background:rgba(46,83,57,0.9); color:#fff; padding:2rem 1rem; }
+    main { padding:2rem; max-width:1000px; margin:auto; background:rgba(255,255,255,0.95); border-radius:12px; }
+    .cabins { display:flex; flex-wrap:wrap; gap:1.5rem; justify-content:center; margin-bottom:2rem; }
+    .cabin-card { background:#fff; padding:1rem; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.15); flex:1 1 30%; max-width:300px; text-align:center; cursor:pointer; transition: transform 0.2s, box-shadow 0.2s; }
+    .cabin-card:hover { transform:scale(1.03); box-shadow:0 8px 15px rgba(0,0,0,0.25); }
+    .cabin-card img { width:100%; border-radius:8px; margin-bottom:0.5rem; max-height:200px; object-fit:cover; }
+    .reservation { background:#fff; padding:2rem; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.1); margin-bottom:2rem; }
     form { display:flex; flex-direction:column; gap:1rem; }
     label { font-weight:bold; }
     input, select, button { padding:0.6rem; border-radius:6px; border:1px solid #ccc; font-size:1rem; }
@@ -74,7 +31,7 @@
     th { background:#2e5339; color:white; }
     footer { text-align:center; padding:1.5rem; background:rgba(46,83,57,0.9); color:white; margin-top:2rem; }
 
-    /* --- Cabin Details Modal --- */
+    /* Cabin Details Modal */
     #cabinDetails {
       display:none;
       position:fixed;
@@ -91,80 +48,28 @@
       border-radius:12px;
       box-shadow:0 8px 25px rgba(0,0,0,0.3);
     }
-    #cabinDetails h2 { text-align:center; color:#2e5339; margin-bottom:1rem; }
-    #cabinDetails img {
-      width:100%;
-      max-height:400px;
-      object-fit:cover;
-      border-radius:12px;
-      margin-bottom:1rem;
-    }
-    #closeDetails {
-      position:absolute;
-      top:15px;
-      right:15px;
-      background:#d9534f;
-      border:none;
-      color:white;
-      font-weight:bold;
-      padding:0.5rem 1rem;
-      border-radius:6px;
-      cursor:pointer;
-      transition: background 0.3s;
-    }
-    #closeDetails:hover { background:#c9302c; }
-    .gallery-controls {
-      display:flex;
-      justify-content:space-between;
-      margin-bottom:1rem;
-    }
-    .gallery-controls button {
-      padding:0.5rem 1rem;
-      border:none;
-      border-radius:6px;
-      background:#2e5339;
-      color:white;
-      cursor:pointer;
-      transition: background 0.3s;
-    }
-    .gallery-controls button:hover { background:#3c6b4b; }
-    .thumbnails {
-      display:flex;
-      gap:0.5rem;
-      flex-wrap:wrap;
-      justify-content:center;
-      margin-bottom:1rem;
-    }
-    .thumbnails img {
-      width:80px;
-      height:60px;
-      object-fit:cover;
-      border-radius:6px;
-      cursor:pointer;
-      border:2px solid transparent;
-      transition: border 0.2s;
-    }
-    .thumbnails img.active { border-color:#2e5339; }
-    #cabinDescription, #cabinDetails ul {
-      text-align:center;
-      margin-bottom:1rem;
-    }
-    #cabinDetails ul {
-      list-style:none;
-      padding:0;
-      margin:0;
-    }
-    #cabinDetails li { margin-bottom:0.5rem; font-weight:500; }
     #cabinDetails::before {
       content:'';
-      position:fixed;
-      top:0; left:0; right:0; bottom:0;
+      position:fixed; top:0; left:0; right:0; bottom:0;
       background:rgba(0,0,0,0.4);
       z-index:-1;
     }
+    #cabinDetails h2 { text-align:center; color:#2e5339; margin-bottom:1rem; }
+    #cabinDetails img { width:100%; max-height:400px; object-fit:cover; border-radius:12px; margin-bottom:1rem; }
+    #closeDetails { position:absolute; top:15px; right:15px; background:#d9534f; border:none; color:white; font-weight:bold; padding:0.5rem 1rem; border-radius:6px; cursor:pointer; transition:background 0.3s; }
+    #closeDetails:hover { background:#c9302c; }
+    .gallery-controls { display:flex; justify-content:space-between; margin-bottom:1rem; }
+    .gallery-controls button { padding:0.5rem 1rem; border:none; border-radius:6px; background:#2e5339; color:white; cursor:pointer; transition:background 0.3s; }
+    .gallery-controls button:hover { background:#3c6b4b; }
+    .thumbnails { display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:center; margin-bottom:1rem; }
+    .thumbnails img { width:80px; height:60px; object-fit:cover; border-radius:6px; cursor:pointer; border:2px solid transparent; transition:border 0.2s; }
+    .thumbnails img.active { border-color:#2e5339; }
+    #cabinDescription, #cabinDetails ul { text-align:center; margin-bottom:1rem; }
+    #cabinDetails ul { list-style:none; padding:0; margin:0; }
+    #cabinDetails li { margin-bottom:0.5rem; font-weight:500; }
 
-    @media(max-width:768px){ .cabin-card { flex:1 1 45%; } }
-    @media(max-width:480px){ .cabin-card { flex:1 1 100%; } #cabinDetails { padding:1rem; } }
+    @media(max-width:768px){ .cabin-card{flex:1 1 45%;} }
+    @media(max-width:480px){ .cabin-card{flex:1 1 100%;} #cabinDetails{padding:1rem;} }
   </style>
 </head>
 <body>
@@ -193,7 +98,7 @@
       </div>
     </section>
 
-    <!-- Cabin Details Modal -->
+    <!-- Cabin Modal -->
     <section id="cabinDetails">
       <button id="closeDetails">Close ✖</button>
       <h2 id="cabinTitle"></h2>
@@ -225,7 +130,7 @@
         <input type="date" id="checkin" name="checkin" required>
         <label for="checkout">Check-out Date:</label>
         <input type="date" id="checkout" name="checkout" required>
-        <label for="email">Email (for reservation & payment instructions):</label>
+        <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
         <label><input type="checkbox" id="cleaning" name="cleaning"> Add Cleaning Fee</label>
         <label><input type="checkbox" id="linen" name="linen"> Add Linen Fee</label>
@@ -242,13 +147,11 @@
       <h2>All Reservations</h2>
       <?php
       $conn = new mysqli("localhost", "root", "12345678Riina", "cabin_customer_reservations");
-      if ($conn->connect_error) {
-          echo "<p>Database connection error.</p>";
-      } else {
+      if ($conn->connect_error) { echo "<p>Database connection error.</p>"; }
+      else {
           $result = $conn->query("SELECT id, cabin, checkin, checkout, total_price, payment_status, created_at FROM reservations ORDER BY created_at DESC");
           if ($result && $result->num_rows > 0) {
-              echo "<table>";
-              echo "<tr><th>ID</th><th>Cabin</th><th>Check-in</th><th>Check-out</th><th>Total (€)</th><th>Payment</th><th>Reserved At</th></tr>";
+              echo "<table><tr><th>ID</th><th>Cabin</th><th>Check-in</th><th>Check-out</th><th>Total (€)</th><th>Payment</th><th>Reserved At</th></tr>";
               while ($row = $result->fetch_assoc()) {
                   echo "<tr>
                           <td>{$row['id']}</td>
@@ -261,9 +164,7 @@
                         </tr>";
               }
               echo "</table>";
-          } else {
-              echo "<p>No reservations yet.</p>";
-          }
+          } else { echo "<p>No reservations yet.</p>"; }
           $conn->close();
       }
       ?>
@@ -278,40 +179,34 @@
     const cabins = {
       helmi1: {
         title: "Helmi 1",
-        description: "A cozy cabin by Käränkävaara ridge. Perfect for a peaceful retreat, sleeps 4.",
-        priceTiers: { '2': 75, '3-5': 70, '6+': 50 },
-        cleaning: 100,
-        linen: 25,
-        images: [
+        description: "Cozy cabin by Käränkävaara ridge. Sleeps 4.",
+        priceTiers: {'2':75,'3-5':70,'6+':50},
+        cleaning:100, linen:25,
+        images:[
           "https://media.houseandgarden.co.uk/photos/63a1a9b588e2d802928c6499/2:3/w_2000,h_3000,c_limit/MFOX7961.jpg",
           "https://hips.hearstapps.com/hmg-prod/images/clx100122welldargenzio-002-2-66d768fc6c262.jpg",
-          "https://stofferhome.com/cdn/shop/collections/Screen_Shot_2023-01-17_at_2.25.55_PM_3024x.png?v=1673983797",
-          "https://i.pinimg.com/736x/8b/f2/0d/8bf20dad9de73912e8f79ab827f5da4b.jpg"
+          "https://stofferhome.com/cdn/shop/collections/Screen_Shot_2023-01-17_at_2.25.55_PM_3024x.png?v=1673983797"
         ]
       },
       helmi2: {
         title: "Helmi 2",
-        description: "Rustic cabin with sauna, ideal for families or groups. Sleeps 6.",
-        priceTiers: { '2': 120, '3-5': 110, '6+': 70 },
-        cleaning: 100,
-        linen: 25,
-        images: [
+        description: "Rustic cabin with sauna. Sleeps 6.",
+        priceTiers: {'2':120,'3-5':110,'6+':70},
+        cleaning:100, linen:25,
+        images:[
           "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615536116.jpg?k=1105a0cd9fd25cd7ebe53a200226d44a240536de1369da10089033a61471f2b9&o=&hp=1",
           "https://cdn.mos.cms.futurecdn.net/9AW7pCmj5LmquUGiXLRhUW.jpg",
-          "https://blog.canadianloghomes.com/wp-content/uploads/2022/02/log-cabin-living-room.jpg",
-          "https://i.pinimg.com/736x/3a/c6/80/3ac6805b5b0a3fc46b68366a793b418a.jpg"
+          "https://blog.canadianloghomes.com/wp-content/uploads/2022/02/log-cabin-living-room.jpg"
         ]
       },
       helmi3: {
         title: "Helmi 3",
-        description: "Modern cabin with fireplace and lake views. Sleeps 6.",
-        priceTiers: { '2': 110, '3-5': 100, '6+': 60 },
-        cleaning: 100,
-        linen: 25,
-        images: [
+        description: "Modern cabin with fireplace. Sleeps 6.",
+        priceTiers: {'2':110,'3-5':100,'6+':60},
+        cleaning:100, linen:25,
+        images:[
           "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/cabin-at-the-lake-thomas-nay.jpg",
           "https://gallery.streamlinevrs.com/units-gallery/00/05/CD/image_167989129.jpeg",
-          "https://gallery.streamlinevrs.com/units-gallery/00/0C/38/image_165319104.jpeg",
           "https://stayovernow.com/wp-content/uploads/2024/01/image_163623794-e1704379674682.webp"
         ]
       }
@@ -345,89 +240,80 @@
         cabinImage.src = currentImages[currentIndex];
         updateThumbnails();
         cabinDetails.style.display = "block";
-        window.scrollTo({ top: 0, behavior: "smooth" });
       });
     });
 
     function updateThumbnails() {
       thumbnails.innerHTML = "";
-      currentImages.forEach((img, i) => {
-        const thumb = document.createElement('img');
-        thumb.src = img;
-        if (i === currentIndex) thumb.classList.add('active');
-        thumb.addEventListener('click', () => {
-          currentIndex = i;
-          cabinImage.src = currentImages[currentIndex];
+      currentImages.forEach((img,i)=>{
+        const thumb=document.createElement('img');
+        thumb.src=img;
+        if(i===currentIndex) thumb.classList.add('active');
+        thumb.addEventListener('click',()=>{
+          currentIndex=i;
+          cabinImage.src=currentImages[currentIndex];
           updateThumbnails();
         });
         thumbnails.appendChild(thumb);
       });
     }
 
-    prevImg.addEventListener('click', () => {
-      if (!currentImages.length) return;
-      currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
-      cabinImage.src = currentImages[currentIndex];
+    prevImg.addEventListener('click',()=>{
+      if(!currentImages.length) return;
+      currentIndex=(currentIndex-1+currentImages.length)%currentImages.length;
+      cabinImage.src=currentImages[currentIndex];
       updateThumbnails();
     });
-    nextImg.addEventListener('click', () => {
-      if (!currentImages.length) return;
-      currentIndex = (currentIndex + 1) % currentImages.length;
-      cabinImage.src = currentImages[currentIndex];
-      updateThumbnails();
-    });
-    closeDetails.addEventListener('click', () => { cabinDetails.style.display = "none"; });
 
-    // Reservation form
-    const form = document
-        // Reservation form
+    nextImg.addEventListener('click',()=>{
+      if(!currentImages.length) return;
+      currentIndex=(currentIndex+1)%currentImages.length;
+      cabinImage.src=currentImages[currentIndex];
+      updateThumbnails();
+    });
+
+    closeDetails.addEventListener('click',()=>{ cabinDetails.style.display="none"; });
+
+    // Reservation price
     const form = document.getElementById('reservationForm');
     const totalPriceEl = document.getElementById('totalPrice');
     const confirmation = document.getElementById('confirmation');
 
-    function getNights(checkinStr, checkoutStr) {
-      if (!checkinStr || !checkoutStr) return NaN;
-      const checkin = new Date(checkinStr);
-      const checkout = new Date(checkoutStr);
-      return (checkout - checkin) / (1000 * 60 * 60 * 24);
+    function getNights(checkinStr, checkoutStr){
+      if(!checkinStr || !checkoutStr) return NaN;
+      const checkin=new Date(checkinStr);
+      const checkout=new Date(checkoutStr);
+      return (checkout-checkin)/(1000*60*60*24);
     }
 
-    function pickPriceForNights(priceTiers, nights) {
-      if (nights >= 6) return priceTiers['6+'];
-      if (nights >= 3 && nights <= 5) return priceTiers['3-5'];
+    function pickPriceForNights(priceTiers,nights){
+      if(nights>=6) return priceTiers['6+'];
+      if(nights>=3) return priceTiers['3-5'];
       return priceTiers['2'];
     }
 
-    function calculatePriceClient() {
-      const cabinKey = form.cabin.value;
-      const nights = getNights(form.checkin.value, form.checkout.value);
-      const people = parseInt(form.people.value) || 1;
-      const cleaningChecked = form.cleaning.checked;
-      const linenChecked = form.linen.checked;
-
-      if (!cabinKey || isNaN(nights) || nights < 2) {
-        totalPriceEl.textContent = "0";
-        return;
-      }
-
-      const perNight = pickPriceForNights(cabins[cabinKey].priceTiers, nights);
-      let total = perNight * nights;
-      if (cleaningChecked) total += cabins[cabinKey].cleaning;
-      if (linenChecked) total += cabins[cabinKey].linen * people;
-
-      totalPriceEl.textContent = total;
+    function calculatePriceClient(){
+      const cabinKey=form.cabin.value;
+      const nights=getNights(form.checkin.value, form.checkout.value);
+      const people=parseInt(form.people.value)||1;
+      const cleaningChecked=form.cleaning.checked;
+      const linenChecked=form.linen.checked;
+      if(!cabinKey||isNaN(nights)||nights<2){ totalPriceEl.textContent="0"; return; }
+      const perNight=pickPriceForNights(cabins[cabinKey].priceTiers,nights);
+      let total=perNight*nights;
+      if(cleaningChecked) total+=cabins[cabinKey].cleaning;
+      if(linenChecked) total+=cabins[cabinKey].linen*people;
+      totalPriceEl.textContent=total;
     }
 
     form.addEventListener('input', calculatePriceClient);
-
-    form.addEventListener('submit', (e) => {
-      const nights = getNights(form.checkin.value, form.checkout.value);
+    form.addEventListener('submit',(e)=>{      const nights = getNights(form.checkin.value, form.checkout.value);
       if (isNaN(nights) || nights < 2) {
         e.preventDefault();
         alert('Minimum stay is 2 nights.');
         return false;
       }
-      confirmation.innerHTML = "<p>Sending reservation to server…</p>";
+      confirmation.innerHTML = `<p>Sending reservation to server…</p>`;
     });
   </script>
 </body>
