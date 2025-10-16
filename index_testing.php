@@ -8,8 +8,8 @@
   body { margin:0; font-family:Arial,sans-serif; background:url("https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0") no-repeat center center fixed; background-size:cover; color:#333; }
   header { text-align:center; background:rgba(46,83,57,0.9); color:#fff; padding:2rem 1rem; }
   main { padding:2rem; max-width:1000px; margin:auto; background:rgba(255,255,255,0.95); border-radius:12px; }
-  .cabins { display:flex; gap:1.5rem; margin-bottom:2rem; }
-  .cabin-card { background:#fff; padding:1rem; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.1); flex:1; text-align:center; cursor:pointer; transition:transform 0.2s; }
+  .cabins { display:flex; gap:1.5rem; margin-bottom:2rem; flex-wrap:wrap; }
+  .cabin-card { background:#fff; padding:1rem; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.1); flex:1; text-align:center; cursor:pointer; transition:transform 0.2s; min-width:250px; }
   .cabin-card:hover { transform:scale(1.03); }
   .cabin-card img { width:100%; border-radius:8px; margin-bottom:0.5rem; max-height:200px; object-fit:cover; }
   .reservation { background:#fff; padding:2rem; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.1); margin-bottom:2rem; }
@@ -35,17 +35,17 @@
 <main>
   <!-- Cabin Cards -->
   <section class="cabins">
-    <div class="cabin-card" data-id="1">
+    <div class="cabin-card" data-id="helmi1">
       <h2>Helmi 1</h2>
       <img src="https://media.houseandgarden.co.uk/photos/63a1a9b588e2d802928c6499/2:3/w_2000,h_3000,c_limit/MFOX7961.jpg" alt="Helmi 1">
       <p>Cozy cabin by Käränkävaara ridge. Sleeps 4.</p>
     </div>
-    <div class="cabin-card" data-id="2">
+    <div class="cabin-card" data-id="helmi2">
       <h2>Helmi 2</h2>
       <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/615536116.jpg?k=1105a0cd9fd25cd7ebe53a200226d44a240536de1369da10089033a61471f2b9&o=&hp=1" alt="Helmi 2">
       <p>Rustic cabin with sauna. Sleeps 6.</p>
     </div>
-    <div class="cabin-card" data-id="3">
+    <div class="cabin-card" data-id="helmi3">
       <h2>Helmi 3</h2>
       <img src="https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/cabin-at-the-lake-thomas-nay.jpg" alt="Helmi 3">
       <p>Modern cabin with fireplace. Sleeps 6.</p>
@@ -59,9 +59,9 @@
       <label for="cabin">Select Cabin:</label>
       <select id="cabin" name="cabin_id" required>
         <option value="">--Choose a cabin--</option>
-        <option value="1">Helmi 1</option>
-        <option value="2">Helmi 2</option>
-        <option value="3">Helmi 3</option>
+        <option value="helmi1">Helmi 1</option>
+        <option value="helmi2">Helmi 2</option>
+        <option value="helmi3">Helmi 3</option>
       </select>
 
       <label for="name">Full Name:</label>
@@ -136,9 +136,35 @@
 </footer>
 
 <script>
+/* --- Cabin data object with pricing and gallery --- */
+const cabins = {
+  helmi1: {
+    title: "Helmi 1",
+    description: "A cozy cabin by Käränkävaara ridge. Perfect for a peaceful retreat, sleeps 4.",
+    priceTiers: { '2': 75, '3-5': 70, '6+': 50 },
+    cleaning: 100,
+    linen: 25
+  },
+  helmi2: {
+    title: "Helmi 2",
+    description: "Rustic cabin with sauna, ideal for families or groups. Sleeps 6.",
+    priceTiers: { '2': 120, '3-5': 110, '6+': 70 },
+    cleaning: 100,
+    linen: 25
+  },
+  helmi3: {
+    title: "Helmi 3",
+    description: "Modern cabin with fireplace and lake views. Sleeps 6.",
+    priceTiers: { '2': 110, '3-5': 100, '6+': 60 },
+    cleaning: 100,
+    linen: 25
+  }
+};
+
 const form = document.getElementById('reservationForm');
 const totalPriceEl = document.getElementById('totalPrice');
 
+/* --- Helper: calculate nights --- */
 function getNights(checkin, checkout){
   if(!checkin || !checkout) return 0;
   const start = new Date(checkin);
@@ -146,25 +172,45 @@ function getNights(checkin, checkout){
   return Math.max(0, (end - start)/(1000*60*60*24));
 }
 
+/* --- Helper: pick correct nightly price tier --- */
+function getPricePerNight(cabinData, nights){
+  if(nights <= 2) return cabinData.priceTiers['2'];
+  if(nights <= 5) return cabinData.priceTiers['3-5'];
+  return cabinData.priceTiers['6+'];
+}
+
+/* --- Calculate total price dynamically --- */
 function calculatePrice(){
-  const cabin = form.cabin_id.value;
+  const cabinKey = form.cabin_id.value;
   const nights = getNights(form.checkin.value, form.checkout.value);
   const people = parseInt(form.people.value) || 1;
   const cleaning = form.cleaning.checked;
   const linen = form.linen.checked;
 
-  if(!cabin || nights<1){
+  if(!cabinKey || nights < 1){
     totalPriceEl.textContent = "0";
     return;
   }
 
-  let perNight = 100; // base price; can extend for per-cabin logic
+  const cabin = cabins[cabinKey];
+  let perNight = getPricePerNight(cabin, nights);
   let total = perNight * nights;
-  if(cleaning) total += 100;
-  if(linen) total += 25*people;
+
+  if(cleaning) total += cabin.cleaning;
+  if(linen) total += cabin.linen * people;
 
   totalPriceEl.textContent = total;
 }
+
+/* --- Auto-fill form when clicking a card --- */
+document.querySelectorAll('.cabin-card').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    const id = card.dataset.id;
+    form.cabin_id.value = id;
+    form.scrollIntoView({behavior:'smooth'});
+    calculatePrice();
+  });
+});
 
 form.addEventListener('input', calculatePrice);
 </script>
