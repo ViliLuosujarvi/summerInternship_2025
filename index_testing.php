@@ -6,157 +6,146 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Siiranmäki Cabins</title>
   <style>
+    /* --- General Styles --- */
     body {
-      margin:0;
-      font-family:Arial, sans-serif;
-      background:url("https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0") no-repeat center center fixed;
-      background-size:cover;
-      color:#333;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url("https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0") no-repeat center center fixed;
+      background-size: cover;
+      color: #333;
     }
     header {
-      text-align:center; 
-      background:rgba(46,83,57,0.9); 
-      color:#fff; 
+      text-align:center;
+      background:rgba(46,83,57,0.9);
+      color:#fff;
       padding:2rem 1rem;
     }
     main {
-      padding:2rem; 
-      max-width:1000px; 
-      margin:auto; 
-      background:rgba(255,255,255,0.95); 
+      padding:2rem;
+      max-width:1200px;
+      margin:auto;
+      background:rgba(255,255,255,0.95);
       border-radius:12px;
     }
+
+    /* --- Cabins Row --- */
     .cabins {
-      display:flex; 
-      flex-wrap:wrap; 
-      gap:1.5rem; 
-      margin-bottom:2rem; 
+      display:flex;
+      flex-wrap:wrap;
       justify-content:center;
+      gap:1.5rem;
+      margin-bottom:2rem;
     }
     .cabin-card {
-      background:#fff; 
-      padding:1rem; 
-      border-radius:12px; 
+      background:#fff;
+      padding:1rem;
+      border-radius:12px;
       box-shadow:0 4px 8px rgba(0,0,0,0.15);
-      flex:1 1 30%; 
-      max-width:300px; 
-      text-align:center; 
-      cursor:pointer; 
+      flex:1 1 30%;
+      text-align:center;
+      cursor:pointer;
       transition: transform 0.2s, box-shadow 0.2s;
+      max-width:300px;
     }
     .cabin-card:hover {
-      transform:scale(1.03); 
+      transform:scale(1.03);
       box-shadow:0 8px 15px rgba(0,0,0,0.25);
     }
     .cabin-card img {
-      width:100%; 
-      border-radius:8px; 
-      margin-bottom:0.5rem; 
-      max-height:200px; 
+      width:100%;
+      border-radius:8px;
+      margin-bottom:0.5rem;
+      max-height:200px;
       object-fit:cover;
     }
+
+    /* --- Reservation Form --- */
     .reservation {
-      background:#fff; 
-      padding:2rem; 
-      border-radius:12px; 
-      box-shadow:0 4px 6px rgba(0,0,0,0.1); 
+      background:#fff;
+      padding:2rem;
+      border-radius:12px;
+      box-shadow:0 4px 6px rgba(0,0,0,0.1);
       margin-bottom:2rem;
     }
-    form {display:flex; flex-direction:column; gap:1rem;}
-    label {font-weight:bold;}
-    input, select, button {padding:0.6rem; border-radius:6px; border:1px solid #ccc; font-size:1rem;}
-    button {background:#2e5339; color:white; cursor:pointer; transition:background 0.3s;}
-    button:hover {background:#3c6b4b;}
-    #confirmation {margin-top:1.5rem; padding:1rem; background:#e6f4ea; border:1px solid #a4d5b2; border-radius:8px;}
-    table {width:100%; border-collapse:collapse; margin-top:1rem;}
-    th, td {border:1px solid #ccc; padding:0.6rem; text-align:center;}
-    th {background:#2e5339; color:white;}
-    footer {text-align:center; padding:1.5rem; background:rgba(46,83,57,0.9); color:white; margin-top:2rem;}
+    form { display:flex; flex-direction:column; gap:1rem; }
+    label { font-weight:bold; }
+    input, select, button { padding:0.6rem; border-radius:6px; border:1px solid #ccc; font-size:1rem; }
+    button { background:#2e5339; color:white; cursor:pointer; transition:background 0.3s; }
+    button:hover { background:#3c6b4b; }
+    #totalPrice { font-weight:bold; }
+    #confirmation { margin-top:1.5rem; padding:1rem; background:#e6f4ea; border:1px solid #a4d5b2; border-radius:8px; }
 
-    /* Modal */
+    /* --- Reservations Table --- */
+    table { width:100%; border-collapse:collapse; margin-top:1rem; }
+    th, td { border:1px solid #ccc; padding:0.6rem; text-align:center; }
+    th { background:#2e5339; color:white; }
+
+    /* --- Cabin Details Modal --- */
     #cabinDetails {
-      display:none; 
-      position:fixed; 
-      top:50%; 
-      left:50%; 
-      transform:translate(-50%, -50%); 
-      z-index:9999; 
-      width:90%; 
-      max-width:700px; 
-      max-height:90vh; 
-      overflow-y:auto; 
-      background:#fff; 
-      padding:2rem; 
-      border-radius:12px; 
+      display:none;
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%);
+      z-index:9999;
+      width:90%;
+      max-width:700px;
+      max-height:90vh;
+      overflow-y:auto;
+      background:#fff;
+      padding:2rem;
+      border-radius:12px;
       box-shadow:0 8px 25px rgba(0,0,0,0.3);
     }
-    #cabinDetails h2 {text-align:center; color:#2e5339; margin-bottom:1rem;}
+    #cabinDetails h2 { text-align:center; color:#2e5339; margin-bottom:1rem; }
     #cabinDetails img {
-      width:100%; 
-      max-height:400px; 
-      object-fit:cover; 
-      border-radius:12px; 
+      width:100%;
+      max-height:400px;
+      object-fit:cover;
+      border-radius:12px;
       margin-bottom:1rem;
     }
     #closeDetails {
-      position:absolute; 
-      top:15px; 
-      right:15px; 
-      background:#d9534f; 
-      border:none; 
-      color:white; 
-      font-weight:bold; 
-      padding:0.5rem 1rem; 
-      border-radius:6px; 
+      position:absolute;
+      top:15px;
+      right:15px;
+      background:#d9534f;
+      border:none;
+      color:white;
+      font-weight:bold;
+      padding:0.5rem 1rem;
+      border-radius:6px;
       cursor:pointer;
       transition: background 0.3s;
     }
     #closeDetails:hover { background:#c9302c; }
-    .gallery-controls {
-      display:flex; 
-      justify-content:space-between; 
-      margin-bottom:1rem;
-    }
+    .gallery-controls { display:flex; justify-content:space-between; margin-bottom:1rem; }
     .gallery-controls button {
-      padding:0.5rem 1rem; 
-      border:none; 
-      border-radius:6px; 
-      background:#2e5339; 
-      color:white; 
-      cursor:pointer; 
+      padding:0.5rem 1rem;
+      border:none;
+      border-radius:6px;
+      background:#2e5339;
+      color:white;
+      cursor:pointer;
       transition: background 0.3s;
     }
     .gallery-controls button:hover { background:#3c6b4b; }
-    .thumbnails {
-      display:flex; 
-      gap:0.5rem; 
-      flex-wrap:wrap; 
-      justify-content:center; 
-      margin-bottom:1rem;
-    }
+    .thumbnails { display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:center; margin-bottom:1rem; }
     .thumbnails img {
-      width:80px; 
-      height:60px; 
-      object-fit:cover; 
-      border-radius:6px; 
-      cursor:pointer; 
-      border:2px solid transparent; 
-      transition: border 0.2s;
+      width:80px;
+      height:60px;
+      object-fit:cover;
+      border-radius:6px;
+      cursor:pointer;
+      border:2px solid transparent;
+      transition:border 0.2s;
     }
-    .thumbnails img.active {border-color:#2e5339;}
-    #cabinDescription, #cabinDetails ul {
-      text-align:center; 
-      margin-bottom:1rem;
-    }
-    #cabinDetails ul {
-      list-style:none; 
-      padding:0; 
-      margin:0;
-    }
-    #cabinDetails li { margin-bottom:0.5rem; font-weight:500; }
+    .thumbnails img.active { border-color:#2e5339; }
 
-    @media(max-width:768px){ .cabin-card {flex:1 1 45%;} }
-    @media(max-width:480px){ .cabin-card {flex:1 1 100%;} #cabinDetails {padding:1rem;} }
+    footer { text-align:center; padding:1.5rem; background:rgba(46,83,57,0.9); color:white; margin-top:2rem; }
+
+    @media(max-width:768px){ .cabin-card { flex:1 1 45%; } }
+    @media(max-width:480px){ .cabin-card { flex:1 1 100%; } #cabinDetails { padding:1rem; } }
   </style>
 </head>
 <body>
@@ -166,7 +155,7 @@
   </header>
 
   <main>
-    <!-- Cabin Cards -->
+    <!-- Cabins -->
     <section class="cabins">
       <div class="cabin-card" data-cabin="helmi1">
         <h2>Helmi 1</h2>
@@ -217,7 +206,7 @@
         <input type="date" id="checkin" name="checkin" required>
         <label for="checkout">Check-out Date:</label>
         <input type="date" id="checkout" name="checkout" required>
-        <label for="email">Email:</label>
+        <label for="email">Email (for reservation & payment instructions):</label>
         <input type="email" id="email" name="email" required>
         <label><input type="checkbox" id="cleaning" name="cleaning"> Add Cleaning Fee</label>
         <label><input type="checkbox" id="linen" name="linen"> Add Linen Fee</label>
@@ -267,77 +256,88 @@
   </footer>
 
   <script>
+    // Cabins Data
     const cabins = {
       helmi1: {
-        title:"Helmi 1",
-        description:"A cozy cabin by Käränkävaara ridge. Sleeps 4.",
-        priceTiers:{'2':75,'3-5':70,'6+':50},
-        cleaning:100,
-        linen:25,
+        title: "Helmi 1",
+        description: "A cozy cabin by Käränkävaara ridge. Perfect for a peaceful retreat, sleeps 4.",
+        priceTiers: { '2':75, '3-5':70, '6+':50 },
+        cleaning: 100,
+        linen: 25,
         images:[
           "https://media.houseandgarden.co.uk/photos/63a1a9b588e2d802928c6499/2:3/w_2000,h_3000,c_limit/MFOX7961.jpg",
-          "https://hips.hearstapps.com/hmg-prod/images/clx100122welldargenzio-002-2-66d768fc6c262.jpg"
+          "https://hips.hearstapps.com/hmg-prod/images/clx100122welldargenzio-002-2-66d768fc6c262.jpg",
+          "https://stofferhome.com/cdn/shop/collections/Screen_Shot_2023-01-17_at_2.25.55_PM_3024x.png?v=1673983797",
+          "https://i.pinimg.com/736x/8b/f2/0d/8bf20dad9de73912e8f79ab827f5da4b.jpg"
         ]
       },
       helmi2: {
         title:"Helmi 2",
-        description:"Rustic cabin with sauna. Sleeps 6.",
+        description:"Rustic cabin with sauna, ideal for families or groups. Sleeps 6.",
         priceTiers:{'2':120,'3-5':110,'6+':70},
         cleaning:100,
         linen:25,
         images:[
           "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615536116.jpg?k=1105a0cd9fd25cd7ebe53a200226d44a240536de1369da10089033a61471f2b9&o=&hp=1",
-          "https://cdn.mos.cms.futurecdn.net/9AW7pCmj5LmquUGiXLRhUW.jpg"
+          "https://cdn.mos.cms.futurecdn.net/9AW7pCmj5LmquUGiXLRhUW.jpg",
+          "https://blog.canadianloghomes.com/wp-content/uploads/2022/02/log-cabin-living-room.jpg",
+          "https://i.pinimg.com/736x/3a/c6/80/3ac6805b5b0a3fc46b68366a793b418a.jpg"
         ]
       },
       helmi3: {
         title:"Helmi 3",
-        description:"Modern cabin with fireplace. Sleeps 6.",
+        description:"Modern cabin with fireplace and lake views. Sleeps 6.",
         priceTiers:{'2':110,'3-5':100,'6+':60},
         cleaning:100,
         linen:25,
         images:[
           "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/cabin-at-the-lake-thomas-nay.jpg",
-          "https://gallery.streamlinevrs.com/units-gallery/00/05/CD/image_167989129.jpeg"
+          "https://gallery.streamlinevrs.com/units-gallery/00/05/CD/image_167989129.jpeg",
+          "https://gallery.streamlinevrs.com/units-gallery/00/0C/38/image_165319104.jpeg",
+          "https://stayovernow.com/wp-content/uploads/2024/01/image_163623794-e1704379674682.webp"
         ]
       }
     };
 
-    const cabinCards=document.querySelectorAll('.cabin-card');
-    const cabinDetails=document.getElementById('cabinDetails');
-    const cabinTitle=document.getElementById('cabinTitle');
-    const cabinImage=document.getElementById('cabinImage');
-    const cabinDescription=document.getElementById('cabinDescription');
-    const detailCleaning=document.getElementById('detailCleaning');
-    const detailLinen=document.getElementById('detailLinen');
-    const closeDetails=document.getElementById('closeDetails');
-    const prevImg=document.getElementById('prevImg');
-    const nextImg=document.getElementById('nextImg');
-    const thumbnails=document.getElementById('thumbnailContainer');
+    // Elements
+    const cabinCards = document.querySelectorAll('.cabin-card');
+    const cabinDetails = document.getElementById('cabinDetails');
+    const cabinTitle = document.getElementById('cabinTitle');
+    const cabinImage = document.getElementById('cabinImage');
+    const cabinDescription = document.getElementById('cabinDescription');
+    const detailCleaning = document.getElementById('detailCleaning');
+    const detailLinen = document.getElementById('detailLinen');
+    const closeDetails = document.getElementById('closeDetails');
+    const prevImg = document.getElementById('prevImg');
+    const nextImg = document.getElementById('nextImg');
+    const thumbnails = document.getElementById('thumbnailContainer');
 
-    let currentImages=[];
-    let currentIndex=0;
+    let currentImages = [];
+    let currentIndex = 0;
 
-    cabinCards.forEach(card=>{
-      card.addEventListener('click',()=>{
-        const key=card.dataset.cabin;
-        const sel=cabins[key];
-        cabinTitle.textContent=sel.title;
-        cabinDescription.textContent=sel.description;
-        detailCleaning.textContent=sel.cleaning;
-        detailLinen.textContent=sel.linen;
-        currentImages=sel.images;
-        currentIndex=0;
-        cabinImage.src=currentImages[currentIndex];
+    // Open modal
+    cabinCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const key = card.dataset.cabin;
+        const selected = cabins[key];
+        cabinTitle.textContent = selected.title;
+        cabinDescription.textContent = selected.description;
+        detailCleaning.textContent = selected.cleaning;
+        detailLinen.textContent = selected.linen;
+        currentImages = selected.images;
+        currentIndex = 0;
+        cabinImage.src = currentImages[currentIndex];
         updateThumbnails();
         cabinDetails.style.display="block";
+        cabinDetails.scrollIntoView({behavior:"smooth"});
       });
     });
 
-    function updateThumbnails(){
+    // Thumbnails
+    function updateThumbnails() {
       thumbnails.innerHTML="";
       currentImages.forEach((img,i)=>{
-        const thumb=document.createElement('img');
+        const thumb = document.createElement('img');
         thumb.src=img;
         if(i===currentIndex) thumb.classList.add('active');
         thumb.addEventListener('click',()=>{
@@ -349,6 +349,7 @@
       });
     }
 
+    // Gallery prev/next
     prevImg.addEventListener('click',()=>{
       if(!currentImages.length) return;
       currentIndex=(currentIndex-1+currentImages.length)%currentImages.length;
@@ -361,37 +362,57 @@
       cabinImage.src=currentImages[currentIndex];
       updateThumbnails();
     });
+
+    // Close modal
     closeDetails.addEventListener('click',()=>{cabinDetails.style.display="none";});
 
-    // Form price calculation
+    // Pricing calculation
     const form=document.getElementById('reservationForm');
     const totalPriceEl=document.getElementById('totalPrice');
     const confirmation=document.getElementById('confirmation');
 
-    function getNights(checkin,checkout){
-      return (new Date(checkout)-new Date(checkin))/(1000*60*60*24);
+    function getNights(checkinStr,checkoutStr){
+      if(!checkinStr||!checkoutStr) return NaN;
+      return (new Date(checkoutStr)-new Date(checkinStr))/(1000*60*60*24);
     }
-    function pickPrice(priceTiers,nights){
+    function pickPriceForNights(priceTiers,nights){
       if(nights>=6) return priceTiers['6+'];
-      if(nights>=3) return priceTiers['3-5'];
+      if(nights>=3&&nights<=5) return priceTiers['3-5'];
       return priceTiers['2'];
     }
-    function calculatePrice(){
-      const cabinKey=form.cabin.value;
-      const nights=getNights(form.checkin.value,form.checkout.value);
-      const people=parseInt(form.people.value)||1;
-      if(!cabinKey||isNaN(nights)||nights<2){totalPriceEl.textContent="0"; return;}
-      let total=pickPrice(cabins[cabinKey].priceTiers,nights)*nights;
-      if(form.cleaning.checked) total+=cabins[cabinKey].cleaning;
-      if(form.linen.checked) total+=cabins[cabinKey].linen*people;
-      totalPriceEl.textContent=total;
+    function calculatePriceClient(){      const cabinKey = form.cabin.value;
+      const nights = getNights(form.checkin.value, form.checkout.value);
+      const people = parseInt(form.people.value) || 1;
+      const cleaningChecked = form.cleaning.checked;
+      const linenChecked = form.linen.checked;
+
+      if (!cabinKey || isNaN(nights) || nights < 2) {
+        totalPriceEl.textContent = "0";
+        return;
+      }
+
+      const perNight = pickPriceForNights(cabins[cabinKey].priceTiers, nights);
+      let total = perNight * nights;
+      if (cleaningChecked) total += cabins[cabinKey].cleaning;
+      if (linenChecked) total += cabins[cabinKey].linen * people;
+
+      totalPriceEl.textContent = total;
     }
-    form.addEventListener('input',calculatePrice);
-    form.addEventListener('submit',(e)=>{
-      const nights=getNights(form.checkin.value,form.checkout.value);
-      if(isNaN(nights)||nights<2){e.preventDefault(); alert('Minimum stay is 2 nights.'); return;}
-      confirmation.innerHTML="<p>Sending reservation to server…</p>";
+
+    form.addEventListener('input', calculatePriceClient);
+
+    form.addEventListener('submit', (e) => {
+      const nights = getNights(form.checkin.value, form.checkout.value);
+      if (isNaN(nights) || nights < 2) {
+        e.preventDefault();
+        alert('Minimum stay is 2 nights.');
+        return false;
+      }
+      confirmation.innerHTML = "<p>Sending reservation to server…</p>";
+      // Let form submit to reserve.php
     });
   </script>
 </body>
 </html>
+
+     
