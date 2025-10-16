@@ -43,7 +43,116 @@
   <main>
     <!-- Display available cabins -->
     <section class="cabins">
-      <script>
+      <div class="cabin-card" data-id="1" data-cabin="helmi1">
+        <h2>Helmi 1</h2>
+        <img src="https://media.houseandgarden.co.uk/photos/63a1a9b588e2d802928c6499/2:3/w_2000,h_3000,c_limit/MFOX7961.jpg" alt="Helmi 1 cabin">
+        <p>Cozy cabin by Käränkävaara ridge. Sleeps 4.</p>
+      </div>
+      <div class="cabin-card" data-id="2" data-cabin="helmi2">
+        <h2>Helmi 2</h2>
+        <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/615536116.jpg?k=1105a0cd9fd25cd7ebe53a200226d44a240536de1369da10089033a61471f2b9&o=&hp=1" alt="Helmi 2 cabin">
+        <p>Rustic cabin with sauna. Sleeps 6.</p>
+      </div>
+      <div class="cabin-card" data-id="3" data-cabin="helmi3">
+        <h2>Helmi 3</h2>
+        <img src="https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/cabin-at-the-lake-thomas-nay.jpg" alt="Helmi 3 cabin">
+        <p>Modern cabin with fireplace. Sleeps 6.</p>
+      </div>
+    </section>
+
+    <!-- Cabin details popup -->
+    <section id="cabinDetails">
+      <button id="closeDetails">Close</button>
+      <h2 id="cabinTitle"></h2>
+      <div class="gallery-controls">
+        <button id="prevImg">◀ Prev</button>
+        <button id="nextImg">Next ▶</button>
+      </div>
+      <img id="cabinImage" src="" alt="Cabin image">
+      <div class="thumbnails" id="thumbnailContainer"></div>
+      <p id="cabinDescription"></p>
+      <p>Cleaning fee: €<span id="detailCleaning"></span></p>
+      <p>Linen (per person): €<span id="detailLinen"></span></p>
+    </section>
+
+    <!-- Reservation form -->
+    <section class="reservation">
+      <h2>Reserve Your Cabin</h2>
+      <form id="reservationForm" action="reserve.php" method="POST">
+        <!-- Cabin selection -->
+        <label for="cabin">Select Cabin:</label>
+        <select id="cabin" name="cabin" required>
+          <option value="">--Choose a cabin--</option>
+          <option value="helmi1">Helmi 1</option>
+          <option value="helmi2">Helmi 2</option>
+          <option value="helmi3">Helmi 3</option>
+        </select>
+
+        <label for="people">Number of people:</label>
+        <input type="number" id="people" name="people" min="1" max="10" value="1" required>
+
+        <label><input type="checkbox" id="cleaning" name="cleaning"> Include cleaning (€)</label>
+        <label><input type="checkbox" id="linen" name="linen"> Include linen (€)</label>
+
+        <!-- Dates -->
+        <label for="checkin">Check-in Date:</label>
+        <input type="date" id="checkin" name="checkin" required>
+
+        <label for="checkout">Check-out Date:</label>
+        <input type="date" id="checkout" name="checkout" required>
+
+        <p>Total price: €<span id="totalPrice">0</span></p>
+
+        <button type="submit">Reserve</button>
+      </form>
+      <div id="confirmation"></div>
+    </section>
+
+    <!-- Display all reservations -->
+    <section class="all-reservations">
+      <h2>All Reservations</h2>
+      <?php
+      $conn = new mysqli("localhost", "root", "", "cabin_booking");
+      if ($conn->connect_error) {
+          echo "<p>Database connection error: " . $conn->connect_error . "</p>";
+      } else {
+          $sql = "SELECT r.reservation_id, c.name AS cabin_name, g.email AS guest_email, r.reserved_by, r.start_date, r.end_date, r.created_at
+                  FROM reservations r
+                  JOIN cabins c ON r.cabin_id = c.cabin_id
+                  LEFT JOIN guests g ON r.guest_id = g.guest_id
+                  ORDER BY r.created_at DESC";
+          $result = $conn->query($sql);
+
+          if ($result && $result->num_rows > 0) {
+              echo "<table>";
+              echo "<tr><th>ID</th><th>Cabin</th><th>Guest Email</th><th>Reserved By</th><th>Check-in</th><th>Check-out</th><th>Created At</th></tr>";
+              while ($row = $result->fetch_assoc()) {
+                  echo "<tr>
+                          <td>{$row['reservation_id']}</td>
+                          <td>".htmlspecialchars($row['cabin_name'])."</td>
+                          <td>".htmlspecialchars($row['guest_email'])."</td>
+                          <td>".htmlspecialchars($row['reserved_by'])."</td>
+                          <td>{$row['start_date']}</td>
+                          <td>{$row['end_date']}</td>
+                          <td>{$row['created_at']}</td>
+                        </tr>";
+              }
+              echo "</table>";
+          } else {
+              echo "<p>No reservations yet.</p>";
+          }
+          $conn->close();
+      }
+      ?>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Siiranmäki Cabins. All rights reserved.</p>
+  </footer>
+
+  <!-- ✅ Inserted JavaScript here -->
+  <script>
     /* Client-side JS: gallery, thumbnails, and price calculator + validation */
     const cabins = {
       helmi1: {
@@ -87,9 +196,6 @@
       }
     };
 
-    // Example: Display a cabin title in the console
-    console.log(cabins.helmi1.title);
-
     // gallery elements
     const cabinCards = document.querySelectorAll('.cabin-card');
     const cabinDetails = document.getElementById('cabinDetails');
@@ -106,7 +212,6 @@
     let currentImages = [];
     let currentIndex = 0;
 
-    // open cabin details when clicking a card
     cabinCards.forEach(card => {
       card.addEventListener('click', () => {
         const key = card.dataset.cabin;
@@ -124,7 +229,6 @@
       });
     });
 
-    // thumbnails
     function updateThumbnails() {
       thumbnails.innerHTML = "";
       currentImages.forEach((img, i) => {
@@ -140,13 +244,13 @@
       });
     }
 
-    // next/prev
     prevImg.addEventListener('click', () => {
       if (!currentImages.length) return;
       currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
       cabinImage.src = currentImages[currentIndex];
       updateThumbnails();
     });
+
     nextImg.addEventListener('click', () => {
       if (!currentImages.length) return;
       currentIndex = (currentIndex + 1) % currentImages.length;
@@ -158,7 +262,7 @@
       cabinDetails.style.display = "none";
     });
 
-    /* Pricing + form */
+    // Pricing + form
     const form = document.getElementById('reservationForm');
     const totalPriceEl = document.getElementById('totalPrice');
     const confirmation = document.getElementById('confirmation');
@@ -167,14 +271,12 @@
       if (!checkinStr || !checkoutStr) return NaN;
       const checkin = new Date(checkinStr);
       const checkout = new Date(checkoutStr);
-      const diff = (checkout - checkin) / (1000 * 60 * 60 * 24);
-      return diff;
+      return (checkout - checkin) / (1000 * 60 * 60 * 24);
     }
 
     function pickPriceForNights(priceTiers, nights) {
       if (nights >= 6) return priceTiers['6+'];
       if (nights >= 3 && nights <= 5) return priceTiers['3-5'];
-      // default 2-night or baseline
       return priceTiers['2'];
     }
 
@@ -198,93 +300,7 @@
       totalPriceEl.textContent = total;
     }
 
-    // run calculation on input changes
     form.addEventListener('input', calculatePriceClient);
-
-
   </script>
-    </section>
-
-    <!-- Reservation form -->
-    <section class="reservation">
-      <h2>Reserve Your Cabin</h2>
-      <form id="reservationForm" action="reserve.php" method="POST">
-        <!-- Cabin selection -->
-        <label for="cabin">Select Cabin:</label>
-        <select id="cabin" name="cabin_id" required>
-          <option value="">--Choose a cabin--</option>
-          <option value="1">Helmi 1</option>
-          <option value="2">Helmi 2</option>
-          <option value="3">Helmi 3</option>
-        </select>
-
-        <!-- Guest information -->
-        <label for="name">Full Name:</label>
-        <input type="text" id="name" name="name" required>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-
-        <!-- Reservation dates -->
-        <label for="checkin">Check-in Date:</label>
-        <input type="date" id="checkin" name="checkin" required>
-
-        <label for="checkout">Check-out Date:</label>
-        <input type="date" id="checkout" name="checkout" required>
-
-        <!-- Submit button -->
-        <button type="submit">Reserve</button>
-      </form>
-      <!-- Confirmation message -->
-      <div id="confirmation"></div>
-    </section>
-
-    <!-- Display all reservations -->
-    <section class="all-reservations">
-      <h2>All Reservations</h2>
-      <?php
-      // Connect to database
-      $conn = new mysqli("localhost", "root", "", "cabin_booking");
-      if ($conn->connect_error) {
-          echo "<p>Database connection error: " . $conn->connect_error . "</p>";
-      } else {
-          // Fetch reservations along with cabin and guest info
-          $sql = "SELECT r.reservation_id, c.name AS cabin_name, g.email AS guest_email, r.reserved_by, r.start_date, r.end_date, r.created_at
-                  FROM reservations r
-                  JOIN cabins c ON r.cabin_id = c.cabin_id
-                  LEFT JOIN guests g ON r.guest_id = g.guest_id
-                  ORDER BY r.created_at DESC";
-          $result = $conn->query($sql);
-
-          if ($result && $result->num_rows > 0) {
-              // Display table header
-              echo "<table>";
-              echo "<tr><th>ID</th><th>Cabin</th><th>Guest Email</th><th>Reserved By</th><th>Check-in</th><th>Check-out</th><th>Created At</th></tr>";
-              // Display each reservation row
-              while ($row = $result->fetch_assoc()) {
-                  echo "<tr>
-                          <td>{$row['reservation_id']}</td>
-                          <td>".htmlspecialchars($row['cabin_name'])."</td>
-                          <td>".htmlspecialchars($row['guest_email'])."</td>
-                          <td>".htmlspecialchars($row['reserved_by'])."</td>
-                          <td>{$row['start_date']}</td>
-                          <td>{$row['end_date']}</td>
-                          <td>{$row['created_at']}</td>
-                        </tr>";
-              }
-              echo "</table>";
-          } else {
-              // Message if no reservations exist
-              echo "<p>No reservations yet.</p>";
-          }
-          $conn->close();
-      }
-      ?>
-    </section>
-  </main>
-
-  <footer>
-    <p>© 2025 Siiranmäki Cabins. All rights reserved.</p>
-  </footer>
 </body>
 </html>
