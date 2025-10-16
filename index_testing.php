@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Siiranmäki Cabins</title>
   <style>
-    /* --- General Styles --- */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -22,13 +21,11 @@
     }
     main {
       padding:2rem;
-      max-width:1200px;
+      max-width:1000px;
       margin:auto;
       background:rgba(255,255,255,0.95);
       border-radius:12px;
     }
-
-    /* --- Cabins Row --- */
     .cabins {
       display:flex;
       flex-wrap:wrap;
@@ -41,10 +38,10 @@
       padding:1rem;
       border-radius:12px;
       box-shadow:0 4px 8px rgba(0,0,0,0.15);
-      flex:1 1 30%;
       text-align:center;
       cursor:pointer;
       transition: transform 0.2s, box-shadow 0.2s;
+      flex: 1 1 30%;
       max-width:300px;
     }
     .cabin-card:hover {
@@ -58,8 +55,6 @@
       max-height:200px;
       object-fit:cover;
     }
-
-    /* --- Reservation Form --- */
     .reservation {
       background:#fff;
       padding:2rem;
@@ -72,15 +67,13 @@
     input, select, button { padding:0.6rem; border-radius:6px; border:1px solid #ccc; font-size:1rem; }
     button { background:#2e5339; color:white; cursor:pointer; transition:background 0.3s; }
     button:hover { background:#3c6b4b; }
-    #totalPrice { font-weight:bold; }
     #confirmation { margin-top:1.5rem; padding:1rem; background:#e6f4ea; border:1px solid #a4d5b2; border-radius:8px; }
-
-    /* --- Reservations Table --- */
     table { width:100%; border-collapse:collapse; margin-top:1rem; }
     th, td { border:1px solid #ccc; padding:0.6rem; text-align:center; }
     th { background:#2e5339; color:white; }
+    footer { text-align:center; padding:1.5rem; background:rgba(46,83,57,0.9); color:white; margin-top:2rem; }
 
-    /* --- Cabin Details Modal --- */
+    /* Popup modal */
     #cabinDetails {
       display:none;
       position:fixed;
@@ -96,6 +89,13 @@
       padding:2rem;
       border-radius:12px;
       box-shadow:0 8px 25px rgba(0,0,0,0.3);
+    }
+    #cabinDetails::before {
+      content:'';
+      position:fixed;
+      top:0; left:0; right:0; bottom:0;
+      background:rgba(0,0,0,0.4);
+      z-index:-1;
     }
     #cabinDetails h2 { text-align:center; color:#2e5339; margin-bottom:1rem; }
     #cabinDetails img {
@@ -120,30 +120,14 @@
     }
     #closeDetails:hover { background:#c9302c; }
     .gallery-controls { display:flex; justify-content:space-between; margin-bottom:1rem; }
-    .gallery-controls button {
-      padding:0.5rem 1rem;
-      border:none;
-      border-radius:6px;
-      background:#2e5339;
-      color:white;
-      cursor:pointer;
-      transition: background 0.3s;
-    }
+    .gallery-controls button { padding:0.5rem 1rem; border:none; border-radius:6px; background:#2e5339; color:white; cursor:pointer; transition: background 0.3s; }
     .gallery-controls button:hover { background:#3c6b4b; }
-    .thumbnails { display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:center; margin-bottom:1rem; }
-    .thumbnails img {
-      width:80px;
-      height:60px;
-      object-fit:cover;
-      border-radius:6px;
-      cursor:pointer;
-      border:2px solid transparent;
-      transition:border 0.2s;
-    }
+    .thumbnails { display:flex; gap:0.5rem; flex-wrap:wrap; justify-content:center; margin-bottom:1rem; }
+    .thumbnails img { width:80px; height:60px; object-fit:cover; border-radius:6px; cursor:pointer; border:2px solid transparent; transition: border 0.2s; }
     .thumbnails img.active { border-color:#2e5339; }
-
-    footer { text-align:center; padding:1.5rem; background:rgba(46,83,57,0.9); color:white; margin-top:2rem; }
-
+    #cabinDescription, #cabinDetails ul { text-align:center; margin-bottom:1rem; }
+    #cabinDetails ul { list-style:none; padding:0; margin:0; }
+    #cabinDetails li { margin-bottom:0.5rem; font-weight:500; }
     @media(max-width:768px){ .cabin-card { flex:1 1 45%; } }
     @media(max-width:480px){ .cabin-card { flex:1 1 100%; } #cabinDetails { padding:1rem; } }
   </style>
@@ -155,7 +139,7 @@
   </header>
 
   <main>
-    <!-- Cabins -->
+    <!-- Cabin Cards -->
     <section class="cabins">
       <div class="cabin-card" data-cabin="helmi1">
         <h2>Helmi 1</h2>
@@ -206,7 +190,7 @@
         <input type="date" id="checkin" name="checkin" required>
         <label for="checkout">Check-out Date:</label>
         <input type="date" id="checkout" name="checkout" required>
-        <label for="email">Email (for reservation & payment instructions):</label>
+        <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
         <label><input type="checkbox" id="cleaning" name="cleaning"> Add Cleaning Fee</label>
         <label><input type="checkbox" id="linen" name="linen"> Add Linen Fee</label>
@@ -256,50 +240,39 @@
   </footer>
 
   <script>
-    // Cabins Data
     const cabins = {
       helmi1: {
-        title: "Helmi 1",
-        description: "A cozy cabin by Käränkävaara ridge. Perfect for a peaceful retreat, sleeps 4.",
-        priceTiers: { '2':75, '3-5':70, '6+':50 },
-        cleaning: 100,
-        linen: 25,
+        title:"Helmi 1",
+        description:"A cozy cabin by Käränkävaara ridge. Sleeps 4.",
+        priceTiers:{'2':75,'3-5':70,'6+':50},
+        cleaning:100, linen:25,
         images:[
           "https://media.houseandgarden.co.uk/photos/63a1a9b588e2d802928c6499/2:3/w_2000,h_3000,c_limit/MFOX7961.jpg",
-          "https://hips.hearstapps.com/hmg-prod/images/clx100122welldargenzio-002-2-66d768fc6c262.jpg",
-          "https://stofferhome.com/cdn/shop/collections/Screen_Shot_2023-01-17_at_2.25.55_PM_3024x.png?v=1673983797",
-          "https://i.pinimg.com/736x/8b/f2/0d/8bf20dad9de73912e8f79ab827f5da4b.jpg"
+          "https://hips.hearstapps.com/hmg-prod/images/clx100122welldargenzio-002-2-66d768fc6c262.jpg"
         ]
       },
       helmi2: {
         title:"Helmi 2",
-        description:"Rustic cabin with sauna, ideal for families or groups. Sleeps 6.",
+        description:"Rustic cabin with sauna. Sleeps 6.",
         priceTiers:{'2':120,'3-5':110,'6+':70},
-        cleaning:100,
-        linen:25,
+        cleaning:100, linen:25,
         images:[
           "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615536116.jpg?k=1105a0cd9fd25cd7ebe53a200226d44a240536de1369da10089033a61471f2b9&o=&hp=1",
-          "https://cdn.mos.cms.futurecdn.net/9AW7pCmj5LmquUGiXLRhUW.jpg",
-          "https://blog.canadianloghomes.com/wp-content/uploads/2022/02/log-cabin-living-room.jpg",
-          "https://i.pinimg.com/736x/3a/c6/80/3ac6805b5b0a3fc46b68366a793b418a.jpg"
+          "https://cdn.mos.cms.futurecdn.net/9AW7pCmj5LmquUGiXLRhUW.jpg"
         ]
       },
       helmi3: {
         title:"Helmi 3",
-        description:"Modern cabin with fireplace and lake views. Sleeps 6.",
+        description:"Modern cabin with fireplace. Sleeps 6.",
         priceTiers:{'2':110,'3-5':100,'6+':60},
-        cleaning:100,
-        linen:25,
+        cleaning:100, linen:25,
         images:[
           "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/cabin-at-the-lake-thomas-nay.jpg",
-          "https://gallery.streamlinevrs.com/units-gallery/00/05/CD/image_167989129.jpeg",
-          "https://gallery.streamlinevrs.com/units-gallery/00/0C/38/image_165319104.jpeg",
-          "https://stayovernow.com/wp-content/uploads/2024/01/image_163623794-e1704379674682.webp"
+          "https://gallery.streamlinevrs.com/units-gallery/00/05/CD/image_167989129.jpeg"
         ]
       }
     };
 
-    // Elements
     const cabinCards = document.querySelectorAll('.cabin-card');
     const cabinDetails = document.getElementById('cabinDetails');
     const cabinTitle = document.getElementById('cabinTitle');
@@ -315,31 +288,28 @@
     let currentImages = [];
     let currentIndex = 0;
 
-    // Open modal
-    cabinCards.forEach(card => {
-      card.addEventListener('click', () => {
-        const key = card.dataset.cabin;
-        const selected = cabins[key];
-        cabinTitle.textContent = selected.title;
-        cabinDescription.textContent = selected.description;
-        detailCleaning.textContent = selected.cleaning;
-        detailLinen.textContent = selected.linen;
-        currentImages = selected.images;
-        currentIndex = 0;
-        cabinImage.src = currentImages[currentIndex];
+    cabinCards.forEach(card=>{
+      card.addEventListener('click', ()=>{
+        const key=card.dataset.cabin;
+        const selected=cabins[key];
+        cabinTitle.textContent=selected.title;
+        cabinDescription.textContent=selected.description;
+        detailCleaning.textContent=selected.cleaning;
+        detailLinen.textContent=selected.linen;
+        currentImages=selected.images;
+        currentIndex=0;
+        cabinImage.src=currentImages[currentIndex];
         updateThumbnails();
         cabinDetails.style.display="block";
-        cabinDetails.scrollIntoView({behavior:"smooth"});
       });
     });
 
-    // Thumbnails
-    function updateThumbnails() {
+    function updateThumbnails(){
       thumbnails.innerHTML="";
       currentImages.forEach((img,i)=>{
-        const thumb = document.createElement('img');
+        const thumb=document.createElement('img');
         thumb.src=img;
-        if(i===currentIndex) thumb.classList.add('active');
+        if(i===currentIndex)thumb.classList.add('active');
         thumb.addEventListener('click',()=>{
           currentIndex=i;
           cabinImage.src=currentImages[currentIndex];
@@ -349,70 +319,62 @@
       });
     }
 
-    // Gallery prev/next
     prevImg.addEventListener('click',()=>{
-      if(!currentImages.length) return;
+      if(!currentImages.length)return;
       currentIndex=(currentIndex-1+currentImages.length)%currentImages.length;
       cabinImage.src=currentImages[currentIndex];
       updateThumbnails();
     });
     nextImg.addEventListener('click',()=>{
-      if(!currentImages.length) return;
+      if(!currentImages.length)return;
       currentIndex=(currentIndex+1)%currentImages.length;
       cabinImage.src=currentImages[currentIndex];
       updateThumbnails();
     });
 
-    // Close modal
     closeDetails.addEventListener('click',()=>{cabinDetails.style.display="none";});
 
-    // Pricing calculation
+    // Price calc
     const form=document.getElementById('reservationForm');
     const totalPriceEl=document.getElementById('totalPrice');
     const confirmation=document.getElementById('confirmation');
 
     function getNights(checkinStr,checkoutStr){
-      if(!checkinStr||!checkoutStr) return NaN;
-      return (new Date(checkoutStr)-new Date(checkinStr))/(1000*60*60*24);
+      if(!checkinStr||!checkoutStr)return NaN;
+      const checkin=new Date(checkinStr);
+      const checkout=new Date(checkoutStr);
+      return (checkout-checkin)/(1000*60*60*24);
     }
     function pickPriceForNights(priceTiers,nights){
-      if(nights>=6) return priceTiers['6+'];
-      if(nights>=3&&nights<=5) return priceTiers['3-5'];
+      if(nights>=6)return priceTiers['6+'];
+      if(nights>=3&&nights<=5)return priceTiers['3-5'];
       return priceTiers['2'];
     }
-    function calculatePriceClient(){      const cabinKey = form.cabin.value;
-      const nights = getNights(form.checkin.value, form.checkout.value);
-      const people = parseInt(form.people.value) || 1;
-      const cleaningChecked = form.cleaning.checked;
-      const linenChecked = form.linen.checked;
-
-      if (!cabinKey || isNaN(nights) || nights < 2) {
-        totalPriceEl.textContent = "0";
-        return;
-      }
-
-      const perNight = pickPriceForNights(cabins[cabinKey].priceTiers, nights);
-      let total = perNight * nights;
-      if (cleaningChecked) total += cabins[cabinKey].cleaning;
-      if (linenChecked) total += cabins[cabinKey].linen * people;
-
-      totalPriceEl.textContent = total;
+    function calculatePriceClient(){
+      const cabinKey=form.cabin.value;
+      const nights=getNights(form.checkin.value,form.checkout.value);
+      const people=parseInt(form.people.value)||1;
+      const cleaningChecked=form.cleaning.checked;
+      const linenChecked=form.linen.checked;
+      if(!cabinKey||isNaN(nights)||nights<2){totalPriceEl.textContent="0";return;}
+      const perNight=pickPriceForNights(cabins[cabinKey].priceTiers,nights);
+      let total=perNight*nights;
+      if(cleaningChecked)total+=cabins[cabinKey].cleaning;
+      if(linenChecked)total+=cabins[cabinKey].linen*people;
+      totalPriceEl.textContent=total;
     }
-
-    form.addEventListener('input', calculatePriceClient);
-
-    form.addEventListener('submit', (e) => {
-      const nights = getNights(form.checkin.value, form.checkout.value);
+    form.addEventListener('input',calculatePriceClient);
+    form.addEventListener('submit',(e)=>{
+      const nights=getNights(form.checkin.value, form.checkout.value);
       if (isNaN(nights) || nights < 2) {
         e.preventDefault();
         alert('Minimum stay is 2 nights.');
         return false;
       }
+      // Let the form submit to reserve.php
       confirmation.innerHTML = "<p>Sending reservation to server…</p>";
-      // Let form submit to reserve.php
     });
   </script>
 </body>
 </html>
 
-     
