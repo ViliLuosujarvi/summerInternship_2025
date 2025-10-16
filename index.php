@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Siiranmäki Cabins</title>
   <style>
+    /* General page styles */
     body { margin:0; font-family:Arial,sans-serif; background:url("https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0") no-repeat center center fixed; background-size:cover; color:#333; }
     header { text-align:center; background:rgba(46,83,57,0.9); color:#fff; padding:2rem 1rem; }
     main { padding:2rem; max-width:1000px; margin:auto; background:rgba(255,255,255,0.95); border-radius:12px; }
@@ -35,12 +36,12 @@
 </head>
 <body>
   <header>
-    <h1>Welcome to Siiranmäki Cabins!</h1>
+    <h1>Welcome to Siiranmäki Cabins</h1>
     <p>Choose your cabin and reserve your stay</p>
   </header>
 
   <main>
-    <!-- Cabin Cards -->
+    <!-- Display available cabins -->
     <section class="cabins">
       <div class="cabin-card" data-id="1" data-cabin="helmi1">
         <h2>Helmi 1</h2>
@@ -59,10 +60,11 @@
       </div>
     </section>
 
-    <!-- Reservation Form -->
+    <!-- Reservation form -->
     <section class="reservation">
       <h2>Reserve Your Cabin</h2>
       <form id="reservationForm" action="reserve.php" method="POST">
+        <!-- Cabin selection -->
         <label for="cabin">Select Cabin:</label>
         <select id="cabin" name="cabin_id" required>
           <option value="">--Choose a cabin--</option>
@@ -71,31 +73,37 @@
           <option value="3">Helmi 3</option>
         </select>
 
+        <!-- Guest information -->
         <label for="name">Full Name:</label>
         <input type="text" id="name" name="name" required>
 
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
 
+        <!-- Reservation dates -->
         <label for="checkin">Check-in Date:</label>
         <input type="date" id="checkin" name="checkin" required>
 
         <label for="checkout">Check-out Date:</label>
         <input type="date" id="checkout" name="checkout" required>
 
+        <!-- Submit button -->
         <button type="submit">Reserve</button>
       </form>
+      <!-- Confirmation message -->
       <div id="confirmation"></div>
     </section>
 
-    <!-- All Reservations Table -->
+    <!-- Display all reservations -->
     <section class="all-reservations">
       <h2>All Reservations</h2>
       <?php
+      // Connect to database
       $conn = new mysqli("localhost", "root", "", "cabin_booking");
       if ($conn->connect_error) {
           echo "<p>Database connection error: " . $conn->connect_error . "</p>";
       } else {
+          // Fetch reservations along with cabin and guest info
           $sql = "SELECT r.reservation_id, c.name AS cabin_name, g.email AS guest_email, r.reserved_by, r.start_date, r.end_date, r.created_at
                   FROM reservations r
                   JOIN cabins c ON r.cabin_id = c.cabin_id
@@ -104,8 +112,10 @@
           $result = $conn->query($sql);
 
           if ($result && $result->num_rows > 0) {
+              // Display table header
               echo "<table>";
               echo "<tr><th>ID</th><th>Cabin</th><th>Guest Email</th><th>Reserved By</th><th>Check-in</th><th>Check-out</th><th>Created At</th></tr>";
+              // Display each reservation row
               while ($row = $result->fetch_assoc()) {
                   echo "<tr>
                           <td>{$row['reservation_id']}</td>
@@ -119,6 +129,7 @@
               }
               echo "</table>";
           } else {
+              // Message if no reservations exist
               echo "<p>No reservations yet.</p>";
           }
           $conn->close();
