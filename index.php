@@ -43,21 +43,166 @@
   <main>
     <!-- Display available cabins -->
     <section class="cabins">
-      <div class="cabin-card" data-id="1" data-cabin="helmi1">
-        <h2>Helmi 1</h2>
-        <img src="https://media.houseandgarden.co.uk/photos/63a1a9b588e2d802928c6499/2:3/w_2000,h_3000,c_limit/MFOX7961.jpg" alt="Helmi 1 cabin">
-        <p>Cozy cabin by Käränkävaara ridge. Sleeps 4.</p>
-      </div>
-      <div class="cabin-card" data-id="2" data-cabin="helmi2">
-        <h2>Helmi 2</h2>
-        <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/615536116.jpg?k=1105a0cd9fd25cd7ebe53a200226d44a240536de1369da10089033a61471f2b9&o=&hp=1" alt="Helmi 2 cabin">
-        <p>Rustic cabin with sauna. Sleeps 6.</p>
-      </div>
-      <div class="cabin-card" data-id="3" data-cabin="helmi3">
-        <h2>Helmi 3</h2>
-        <img src="https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/cabin-at-the-lake-thomas-nay.jpg" alt="Helmi 3 cabin">
-        <p>Modern cabin with fireplace. Sleeps 6.</p>
-      </div>
+      <script>
+    /* Client-side JS: gallery, thumbnails, and price calculator + validation */
+    const cabins = {
+      helmi1: {
+        title: "Helmi 1",
+        description: "A cozy cabin by Käränkävaara ridge. Perfect for a peaceful retreat, sleeps 4.",
+        priceTiers: { '2': 75, '3-5': 70, '6+': 50 },
+        cleaning: 100,
+        linen: 25,
+        images: [
+          "https://media.houseandgarden.co.uk/photos/63a1a9b588e2d802928c6499/2:3/w_2000,h_3000,c_limit/MFOX7961.jpg",
+          "https://hips.hearstapps.com/hmg-prod/images/clx100122welldargenzio-002-2-66d768fc6c262.jpg",
+          "https://stofferhome.com/cdn/shop/collections/Screen_Shot_2023-01-17_at_2.25.55_PM_3024x.png?v=1673983797",
+          "https://i.pinimg.com/736x/8b/f2/0d/8bf20dad9de73912e8f79ab827f5da4b.jpg"
+        ]
+      },
+      helmi2: {
+        title: "Helmi 2",
+        description: "Rustic cabin with sauna, ideal for families or groups. Sleeps 6.",
+        priceTiers: { '2': 120, '3-5': 110, '6+': 70 },
+        cleaning: 100,
+        linen: 25,
+        images: [
+          "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615536116.jpg?k=1105a0cd9fd25cd7ebe53a200226d44a240536de1369da10089033a61471f2b9&o=&hp=1",
+          "https://cdn.mos.cms.futurecdn.net/9AW7pCmj5LmquUGiXLRhUW.jpg",
+          "https://blog.canadianloghomes.com/wp-content/uploads/2022/02/log-cabin-living-room.jpg",
+          "https://i.pinimg.com/736x/3a/c6/80/3ac6805b5b0a3fc46b68366a793b418a.jpg"
+        ]
+      },
+      helmi3: {
+        title: "Helmi 3",
+        description: "Modern cabin with fireplace and lake views. Sleeps 6.",
+        priceTiers: { '2': 110, '3-5': 100, '6+': 60 },
+        cleaning: 100,
+        linen: 25,
+        images: [
+          "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/cabin-at-the-lake-thomas-nay.jpg",
+          "https://gallery.streamlinevrs.com/units-gallery/00/05/CD/image_167989129.jpeg",
+          "https://gallery.streamlinevrs.com/units-gallery/00/0C/38/image_165319104.jpeg",
+          "https://stayovernow.com/wp-content/uploads/2024/01/image_163623794-e1704379674682.webp"
+        ]
+      }
+    };
+
+    // Example: Display a cabin title in the console
+    console.log(cabins.helmi1.title);
+
+    // gallery elements
+    const cabinCards = document.querySelectorAll('.cabin-card');
+    const cabinDetails = document.getElementById('cabinDetails');
+    const cabinTitle = document.getElementById('cabinTitle');
+    const cabinImage = document.getElementById('cabinImage');
+    const cabinDescription = document.getElementById('cabinDescription');
+    const detailCleaning = document.getElementById('detailCleaning');
+    const detailLinen = document.getElementById('detailLinen');
+    const closeDetails = document.getElementById('closeDetails');
+    const prevImg = document.getElementById('prevImg');
+    const nextImg = document.getElementById('nextImg');
+    const thumbnails = document.getElementById('thumbnailContainer');
+
+    let currentImages = [];
+    let currentIndex = 0;
+
+    // open cabin details when clicking a card
+    cabinCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const key = card.dataset.cabin;
+        const selected = cabins[key];
+        cabinTitle.textContent = selected.title;
+        cabinDescription.textContent = selected.description;
+        detailCleaning.textContent = selected.cleaning;
+        detailLinen.textContent = selected.linen;
+        currentImages = selected.images;
+        currentIndex = 0;
+        cabinImage.src = currentImages[currentIndex];
+        updateThumbnails();
+        cabinDetails.style.display = "block";
+        cabinDetails.scrollIntoView({ behavior: "smooth" });
+      });
+    });
+
+    // thumbnails
+    function updateThumbnails() {
+      thumbnails.innerHTML = "";
+      currentImages.forEach((img, i) => {
+        const thumb = document.createElement('img');
+        thumb.src = img;
+        if (i === currentIndex) thumb.classList.add('active');
+        thumb.addEventListener('click', () => {
+          currentIndex = i;
+          cabinImage.src = currentImages[currentIndex];
+          updateThumbnails();
+        });
+        thumbnails.appendChild(thumb);
+      });
+    }
+
+    // next/prev
+    prevImg.addEventListener('click', () => {
+      if (!currentImages.length) return;
+      currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+      cabinImage.src = currentImages[currentIndex];
+      updateThumbnails();
+    });
+    nextImg.addEventListener('click', () => {
+      if (!currentImages.length) return;
+      currentIndex = (currentIndex + 1) % currentImages.length;
+      cabinImage.src = currentImages[currentIndex];
+      updateThumbnails();
+    });
+
+    closeDetails.addEventListener('click', () => {
+      cabinDetails.style.display = "none";
+    });
+
+    /* Pricing + form */
+    const form = document.getElementById('reservationForm');
+    const totalPriceEl = document.getElementById('totalPrice');
+    const confirmation = document.getElementById('confirmation');
+
+    function getNights(checkinStr, checkoutStr) {
+      if (!checkinStr || !checkoutStr) return NaN;
+      const checkin = new Date(checkinStr);
+      const checkout = new Date(checkoutStr);
+      const diff = (checkout - checkin) / (1000 * 60 * 60 * 24);
+      return diff;
+    }
+
+    function pickPriceForNights(priceTiers, nights) {
+      if (nights >= 6) return priceTiers['6+'];
+      if (nights >= 3 && nights <= 5) return priceTiers['3-5'];
+      // default 2-night or baseline
+      return priceTiers['2'];
+    }
+
+    function calculatePriceClient() {
+      const cabinKey = form.cabin.value;
+      const nights = getNights(form.checkin.value, form.checkout.value);
+      const people = parseInt(form.people.value) || 1;
+      const cleaningChecked = form.cleaning.checked;
+      const linenChecked = form.linen.checked;
+
+      if (!cabinKey || isNaN(nights) || nights < 2) {
+        totalPriceEl.textContent = "0";
+        return;
+      }
+
+      const perNight = pickPriceForNights(cabins[cabinKey].priceTiers, nights);
+      let total = perNight * nights;
+      if (cleaningChecked) total += cabins[cabinKey].cleaning;
+      if (linenChecked) total += cabins[cabinKey].linen * people;
+
+      totalPriceEl.textContent = total;
+    }
+
+    // run calculation on input changes
+    form.addEventListener('input', calculatePriceClient);
+
+
+  </script>
     </section>
 
     <!-- Reservation form -->
